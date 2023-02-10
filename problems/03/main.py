@@ -48,24 +48,32 @@ def solve(test_case: dict):
       continue
     for time in sorted(timeline.keys()):
       if timeline[time]['action'] == 'p':
+        # If already has a car
         if log_stack[spy]:
           verdicts[spy] = 'INCONSISTENT'
           break
+        # If not, add the car to stack
         log_stack[spy].append(timeline[time]['car'])
         verdicts[spy] += car_prices[car]['pickup']
       elif timeline[time]['action'] in ['a', 'r']:
+        # If has no car
         if not log_stack[spy]:
           verdicts[spy] = 'INCONSISTENT'
           break
         car = log_stack[spy][-1]
         if timeline[time]['action']= 'r':
+          # Remove car from stack
           log_stack[spy].pop()
           verdicts[spy] += car_prices[car]['mileague'] * timeline[time]['mileague']
         else:
           repair_cost = car_prices[car]['catalog'] * timeline[time]['damage'] / 100
+          # Always round up in case of float
           if int(repair_cost) != repair_cost:
             repair_cost = int(repair_cost) + 1
           verdicts[spy] += repair_cost
+  for spy, stack in log_stack.items():
+    if stack:
+      verdicts[spy] = 'INCONSISTENT'
   return verdicts
           
           
