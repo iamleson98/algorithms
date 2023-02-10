@@ -71,6 +71,7 @@ def solve(test_case: dict):
           if int(repair_cost) != repair_cost:
             repair_cost = int(repair_cost) + 1
           verdicts[spy] += repair_cost
+  # Check if anyone still has car
   for spy, stack in log_stack.items():
     if stack:
       verdicts[spy] = 'INCONSISTENT'
