@@ -28,7 +28,7 @@ const (
 type Dish struct {
 	Ingredients []Ingredient
 	// calculate desired weight amount of each ingredient for output
-	Formular func(ingre Ingredient) float64
+	Formula func(ingre Ingredient) float64
 }
 
 type Ingredient struct {
@@ -47,13 +47,7 @@ func evaluateError(err error) {
 // validateMinMax validates if given value is within [min, max]
 func validateMinMax(value, min, max int) error {
 	if value < min || value > max {
-		var format string = "error: expected value V to be: %d <= V <= %d"
-
-		kind := reflect.ValueOf(value).Kind()
-		if kind == reflect.Float32 || kind == reflect.Float64 {
-			format = "error: expected value V to be: %f <= V <= %f"
-		}
-		return fmt.Errorf(format, min, max)
+		return fmt.Errorf("error: expected value V to be: %d <= V <= %d", min, max)
 	}
 
 	return nil
@@ -64,7 +58,7 @@ func parseDishes(numOfDishes int) []Dish {
 
 	for i := 0; i < numOfDishes; i++ {
 		var numOfIngredients, numOfStandardPortions, numOfDesiredPortions int
-		dashHasMainIngredient := false
+		dishHasMainIngredient := false
 
 		_, err := fmt.Scanf("%d %d %d", &numOfIngredients, &numOfStandardPortions, &numOfDesiredPortions)
 		evaluateError(err)
@@ -87,8 +81,8 @@ func parseDishes(numOfDishes int) []Dish {
 			}
 
 			if fmt.Sprintf("%.1f", ingredient.WeightPercent) == "100.0" {
-				dashHasMainIngredient = true
-				dishes[i].Formular = func(ingre Ingredient) float64 {
+				dishHasMainIngredient = true
+				dishes[i].Formula = func(ingre Ingredient) float64 {
 					return ingre.WeightPercent * (float64(numOfDesiredPortions) / float64(numOfStandardPortions) * ingredient.WeightGr) / 100
 				}
 			}
@@ -96,7 +90,7 @@ func parseDishes(numOfDishes int) []Dish {
 			dishes[i].Ingredients[j] = ingredient
 		}
 
-		if !dashHasMainIngredient {
+		if !dishHasMainIngredient {
 			evaluateError(errors.New("this dish has no main ingredient"))
 		}
 	}
@@ -108,7 +102,7 @@ func outPut(dishes []Dish) {
 	for i, dish := range dishes {
 		fmt.Printf("Recipe # %d\n", i+1)
 		for _, ingre := range dish.Ingredients {
-			fmt.Printf("%s %.1f\n", ingre.Name, dish.Formular(ingre))
+			fmt.Printf("%s %.1f\n", ingre.Name, dish.Formula(ingre))
 		}
 		fmt.Println(strings.Repeat("-", 40))
 	}
