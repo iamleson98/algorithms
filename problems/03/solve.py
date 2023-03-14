@@ -1,15 +1,13 @@
 import math
 
-testCases = input()
-for testCase in testCases:
+testCases = int(input())
+for j in range(testCases):
 	nextLine = input().split()
-	cars = int(nextLine[0])
-	events = int(nextLine[1])
-	carDict = {}
+	cars, events = int(nextLine[0]), int(nextLine[1])
+	carDict, result = {}, {}
 	for i in range(cars):
 		carLine = input().split()
 		carDict[carLine[0]] = (int(carLine[1]), int(carLine[2]), int(carLine[3]))
-	result = {}
 	for i in range(events):
 		time, spy, e, eventValue = input().split()
 		if spy not in result:
